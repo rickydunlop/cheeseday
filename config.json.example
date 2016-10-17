@@ -1,0 +1,10 @@
+{
+    "CRON_URL": "",
+    "PAGE_ACCESS_TOKEN": "",
+    "VERIFY_TOKEN": "",
+    "DB_HOSTNAME": "",
+    "DB_NAME": "",
+    "DB_USERNAME": "",
+    "DB_PASSWORD": "",
+    "DB_PORT": 3306
+}

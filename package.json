@@ -1,0 +1,36 @@
+{
+  "name": "cheeseday",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "aws-sdk": "^2.6.9",
+    "fbmessenger": "^3.0.2",
+    "moment-timezone": "^0.5.5",
+    "mysql": "^2.11.1",
+    "node-fetch": "^1.6.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.8.0",
+    "eslint-config-airbnb-base": "^9.0.0",
+    "eslint-plugin-import": "^2.0.1",
+    "serverless-offline": "github:dherault/serverless-offline"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rickydunlop/cheeseday"
+  },
+  "keywords": [
+    "Cheeseday",
+    "jokes",
+    "messenger",
+    "bot",
+    "chatbot",
+    "fbmessenger"
+  ],
+  "author": "",
+  "license": "Apache-2.0"
+}

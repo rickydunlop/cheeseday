@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "no-console": 0
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": ["airbnb-base"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "generators": true,
+      "experimentalObjectRestSpread": true
+    }
+  }
+}

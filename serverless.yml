@@ -1,0 +1,60 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    v1.docs.serverless.com
+#
+# Happy Coding!
+
+service: Cheeseday
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+defaults:
+ stage: test
+ region: eu-west-1
+
+plugins:
+  - serverless-offline
+
+functions:
+  bot:
+    handler: messenger.bot
+    memorySize: 1024
+    timeout: 30
+    events:
+      - http:
+          path: webhook
+          method: get
+      - http:
+          path: webhook
+          method: post
+  task:
+    handler: task.index
+    memorySize: 1024
+    timeout: 5
+    events:
+      - http:
+          path: task
+          method: get
+  cron:
+    handler: cron.index
+    memorySize: 1024
+    timeout: 10
+    events:
+      - schedule: cron(0 * ? * 3 *) # Every tuesday
+      # cron(Minutes Hours Day-of-month Month Day-of-week Year)
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    newResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: newBucket

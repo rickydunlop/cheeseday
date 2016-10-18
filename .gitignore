@@ -3,3 +3,7 @@ node_modules/
 creds.json
 
 config.json
+
+config.test.json
+
+config.dev.json

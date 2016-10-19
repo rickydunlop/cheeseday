@@ -3,21 +3,11 @@ const mysql = require('mysql');
 const moment = require('moment-timezone');
 const config = require('./config.json');
 
-const connection = mysql.createConnection({
-  host: config.DB_HOSTNAME,
-  user: config.DB_USERNAME,
-  password: config.DB_PASSWORD,
-  port: config.DB_PORT,
-  database: config.DB_NAME,
-});
-connection.on('error', (err) => {
-  console.log(err, err.stack);
+const messenger = new fbm.Messenger({
+  pageAccessToken: config.PAGE_ACCESS_TOKEN,
 });
 
-const PAGE_ACCESS_TOKEN = config.PAGE_ACCESS_TOKEN;
-const messenger = new fbm.Messenger({
-  pageAccessToken: PAGE_ACCESS_TOKEN,
-});
+let connection = false;
 
 function getUsers() {
   return new Promise((resolve, reject) => {
@@ -74,6 +64,17 @@ function markJokeAsUsed(joke) {
 }
 
 module.exports.index = (event, context, cb) => {
+  connection = mysql.createConnection({
+    host: config.DB_HOSTNAME,
+    user: config.DB_USERNAME,
+    password: config.DB_PASSWORD,
+    port: config.DB_PORT,
+    database: config.DB_NAME,
+  });
+  connection.on('error', (err) => {
+    console.log(err, err.stack);
+  });
+
   getUsers()
     .then((results) => {
       getJoke(true)

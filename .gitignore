@@ -7,3 +7,5 @@ config.json
 config.test.json
 
 config.dev.json
+
+config.production.json

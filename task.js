@@ -1,3 +1,5 @@
+'use strict';
+
 const fbm = require('fbmessenger');
 const mysql = require('mysql');
 const moment = require('moment-timezone');

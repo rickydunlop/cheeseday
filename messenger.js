@@ -50,7 +50,6 @@ function getJoke(unique) {
  */
 function getJokeAnswer(id) {
   return new Promise((resolve, reject) => {
-    console.log('Joke  ID', id);
     const qry = 'SELECT * FROM jokes WHERE `id`=? LIMIT 1';
     connection.query(qry, [id], (err, result) => {
       if (err) {
@@ -132,18 +131,21 @@ function sendJoke() {
 }
 
 messenger.on('message', (message) => {
-  const txt = message.message.text;
-  const msg = txt.toLowerCase();
-  const triggers = ['joke', 'cheese-me', 'cheese'];
-  if (triggers.some(x => msg.includes(x))) {
-    // Check for the joke triggers in the message
-    sendJoke();
-  } else {
-    // Default response
-    const errMsg = DEFAULT_RESPONSES[Math.floor(Math.random() * DEFAULT_RESPONSES.length)];
-    messenger.send({ text: errMsg })
-      .then(() => eventEmitter.emit('complete'))
-      .catch(err => console.log('Message event error', err, err.stack));
+  if ('text' in message.message) {
+    let msg = message.message.text;
+    msg = msg.toLowerCase();
+
+    const triggers = ['joke', 'cheese-me', 'cheese'];
+    if (triggers.some(x => msg.includes(x))) {
+      // Check for the joke triggers in the message
+      sendJoke();
+    } else {
+      // Default response
+      const errMsg = DEFAULT_RESPONSES[Math.floor(Math.random() * DEFAULT_RESPONSES.length)];
+      messenger.send({ text: errMsg })
+        .then(() => eventEmitter.emit('complete'))
+        .catch(err => console.log('Message event error', err, err.stack));
+    }
   }
 });
 

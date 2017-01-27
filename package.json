@@ -4,16 +4,16 @@
   "description": "",
   "main": "handler.js",
   "dependencies": {
-    "fbmessenger": "^3.0.2",
-    "moment-timezone": "^0.5.5",
-    "mysql": "^2.11.1",
+    "fbmessenger": "^3.1.0",
+    "moment-timezone": "^0.5.9",
+    "mysql": "^2.12.0",
     "node-fetch": "^1.6.3"
   },
   "devDependencies": {
-    "eslint": "^3.8.1",
-    "eslint-config-airbnb-base": "^9.0.0",
-    "eslint-plugin-import": "^2.0.1",
-    "serverless-offline": "^3.0.0"
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "serverless-offline": "^3.3.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

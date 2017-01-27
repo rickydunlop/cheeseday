@@ -156,10 +156,7 @@ messenger.on('postback', (message) => {
   if (payload === 'start') {
     messenger.getUser()
       .then((user) => {
-        saveUser(Object.assign(
-          { id: message.sender.id },
-          user
-        ));
+        saveUser(Object.assign({ id: message.sender.id }, user));
 
         // Use this if the attachment_id fails
         // messenger.send(new fbm.Image({

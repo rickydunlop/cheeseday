@@ -114,7 +114,7 @@ function init() {
   return Promise.all([greeting, getStarted, menu]);
 }
 
-function sendJoke() {
+function sendJoke(userID) {
   getJoke(false)
     .then((joke) => {
       const button = new fbm.Button({
@@ -124,7 +124,7 @@ function sendJoke() {
       });
 
       const template = new fbm.ButtonTemplate(joke[0].joke, [button]);
-      messenger.send(template)
+      messenger.send(template, userID)
         .then(() => eventEmitter.emit('complete'))
         .catch(err => console.log('sendJoke error', err, err.stack));
     });
@@ -132,17 +132,17 @@ function sendJoke() {
 
 messenger.on('message', (message) => {
   if ('text' in message.message) {
-    let msg = message.message.text;
-    msg = msg.toLowerCase();
-
+    const userID = message.sender.id;
+    const txt = message.message.text;
+    const msg = txt.toLowerCase();
     const triggers = ['joke', 'cheese-me', 'cheese'];
     if (triggers.some(x => msg.includes(x))) {
       // Check for the joke triggers in the message
-      sendJoke();
+      sendJoke(userID);
     } else {
       // Default response
       const errMsg = DEFAULT_RESPONSES[Math.floor(Math.random() * DEFAULT_RESPONSES.length)];
-      messenger.send({ text: errMsg })
+      messenger.send({ text: errMsg }, userID)
         .then(() => eventEmitter.emit('complete'))
         .catch(err => console.log('Message event error', err, err.stack));
     }
@@ -150,13 +150,14 @@ messenger.on('message', (message) => {
 });
 
 messenger.on('postback', (message) => {
+  const userID = message.sender.id;
   const payload = message.postback.payload;
 
   // Get Started button is clicked
   if (payload === 'start') {
     messenger.getUser()
       .then((user) => {
-        saveUser(Object.assign({ id: message.sender.id }, user));
+        saveUser(Object.assign({ id: userID }, user));
 
         // Use this if the attachment_id fails
         // messenger.send(new fbm.Image({
@@ -180,14 +181,14 @@ messenger.on('postback', (message) => {
       })
       .catch(err => console.log(err, err.stack));
   } else if (payload === 'joke') {
-    sendJoke();
+    sendJoke(userID);
   } else if (isInt(payload)) {
     // Joke callback, gets the answer for the joke by the id sent in the payload
     getJokeAnswer(payload)
       .then((answer) => {
-        messenger.send(new fbm.Image({ url: answer[0].image }))
+        messenger.send(new fbm.Image({ url: answer[0].image }), userID)
           .then(() => {
-            messenger.send({ text: answer[0].answer })
+            messenger.send({ text: answer[0].answer }, userID)
               .then(() => eventEmitter.emit('complete'));
           })
           .catch(err => console.log(err, err.stack));

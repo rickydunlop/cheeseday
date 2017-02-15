@@ -13,7 +13,7 @@ functions:
   bot:
     handler: messenger.index
     memorySize: 1024
-    timeout: 10
+    timeout: 60
     events:
       - http:
           path: webhook
@@ -26,7 +26,7 @@ functions:
   cron:
     handler: task.index
     memorySize: 1024
-    timeout: 10
+    timeout: 60
     events:
       - schedule: cron(0 * ? * 3 *) # Every tuesday
       # cron(Minutes Hours Day-of-month Month Day-of-week Year)

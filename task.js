@@ -41,11 +41,12 @@ function getUsers() {
  */
 function getJoke(unique) {
   return new Promise((resolve, reject) => {
-    let qry = 'SELECT * FROM jokes WHERE `used`=? ORDER BY RAND() LIMIT 1';
+    let qry = 'SELECT * FROM jokes WHERE `last_used` < ?  OR `last_used` IS NULL ORDER BY RAND() LIMIT 1';
     if (!unique) {
       qry = 'SELECT * FROM jokes ORDER BY RAND() LIMIT 1';
     }
-    connection.query(qry, [0], (err, result) => {
+    const lastUsed = moment().subtract(1, 'months').format('YYYY-MM-DD');
+    connection.query(qry, [lastUsed], (err, result) => {
       if (err) {
         console.log(err, err.stack);
         reject(err);
@@ -57,8 +58,9 @@ function getJoke(unique) {
 
 function markJokeAsUsed(joke) {
   return new Promise((resolve, reject) => {
-    const jokeUpdateQuery = 'UPDATE `jokes` SET `used`=1 WHERE `id`=?';
-    connection.query(jokeUpdateQuery, [joke[0].id], (err) => {
+    const jokeUpdateQuery = 'UPDATE `jokes` SET `last_used`=? WHERE `id`=?';
+    const now = moment().format('YYYY-MM-DD HH:mm:ss');
+    connection.query(jokeUpdateQuery, [now, joke[0].id], (err) => {
       if (err) reject(err);
       resolve('Joke marked as used');
     });
@@ -79,34 +81,33 @@ module.exports.index = (event, context, cb) => {
 
   getUsers()
     .then((results) => {
-      getJoke(true)
-        .then((joke) => {
-          markJokeAsUsed(joke)
-            .then(() => {
-              const messages = results.map((result) => {
-                const template = new fbm.ButtonTemplate(
-                  joke[0].joke,
-                  [
-                    new fbm.Button({
-                      type: 'postback',
-                      title: joke[0].button_text,
-                      payload: joke[0].id,
-                    }),
-                  ]
-                );
-                return messenger.send(template, result.id);
-              });
-
-              // Wait for all the Promises to be fulfilled
-              messages.reduce((p, fn) => p.then(fn), Promise.resolve())
-                .then(() => {
-                  connection.end(() => cb(null, 'Success'));
+      if (results.length > 0) {
+        getJoke(true)
+          .then((joke) => {
+            markJokeAsUsed(joke)
+              .then(() => {
+                const button = new fbm.Button({
+                  type: 'postback',
+                  title: joke[0].button_text,
+                  payload: joke[0].id,
                 });
-            });
-        });
+
+                const template = new fbm.ButtonTemplate(joke[0].joke, [button]);
+                const messages = results.map(result => messenger.send(template, result.id));
+
+                // Wait for all the Promises to be fulfilled
+                messages.reduce((p, fn) => p.then(fn), Promise.resolve())
+                  .then(() => {
+                    connection.end(() => cb(null, 'Success'));
+                  });
+              });
+          });
+      } else {
+        connection.end(() => cb(null, 'Success'));
+      }
     })
     .catch((err) => {
-      console.log(`Error: ${err}`);
+      console.log(`Error: ${err}`, err.stack);
       connection.end(() => cb(null, err));
     });
 };

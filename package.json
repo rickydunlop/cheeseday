@@ -4,7 +4,7 @@
   "description": "",
   "main": "handler.js",
   "dependencies": {
-    "fbmessenger": "^3.4.0",
+    "fbmessenger": "^4.0.0",
     "moment-timezone": "^0.5.11",
     "mysql": "^2.13.0",
     "node-fetch": "^1.6.3"

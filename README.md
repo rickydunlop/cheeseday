@@ -1,5 +1,7 @@
 # Cheeseday
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/rickydunlop/cheeseday.svg)](https://greenkeeper.io/)
+
 A Facebook Messenger bot that sends bad cheese jokes every Tuesday
 
 
